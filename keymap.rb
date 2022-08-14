@@ -85,7 +85,7 @@ def y(row_pos)
 end
 
 ignore_pos = [
-  [0, 3], [2, 4], [3, 4], [4, 4], [13, 4], [14, 4]
+  [0, 2], [2, 4], [3, 4], [4, 4], [13, 4], [14, 4]
 ]
 
 row_reverse = [true, false, true, false, true]
