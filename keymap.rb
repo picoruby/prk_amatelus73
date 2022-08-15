@@ -57,59 +57,60 @@ kbd.define_mode_key :GUI_JP, [ :KC_LANG1, :KC_RSFT, 110, 150 ]
 
 #################################################
 #
-# RGBMATRIX (available in PRK Firmware 0.9.18+)
+# RGB Matrix (available in PRK Firmware 0.9.18+)
 #
 #################################################
 # LED chain of the Amatelus73
-# (Starts from right top)
-#
-# L16 <- L1  num:16 (reverse)
-#  |
-# L17 -> L32 num:16
-#         |
-# L47 <- L33 num:15 (reverse)
-#  |
-# L48 -> L63 num:16
-#         |
-# L74 <- L64 num:11 (reverse)
+#                           starts from here
+#                           👇
+# LED16 LED15 … <- … LED2  LED1  (right to left) num:16
+#   |
+# LED17 LED18 … -> … LED31 LED32 (left to right) num:16
+#                            |
+# LED47 LED46 … <- … LED34 LED33 (right to left) num:15
+#   |
+# LED48 LED49 … -> … LED62 LED63 (left to right) num:16
+#                            |
+# LED74 LED73 … <- … LED65 LED64 (right to left) num:11
 
+# 16 * 5 => 80 which is 6 larger than 74
 RGB_COL_COUNT = 16
 RGB_ROW_COUNT = 5
 
-def x(col_pos)
-  224 / (RGB_COL_COUNT - 1) * col_pos
-end
-
-def y(row_pos)
-  64 / (RGB_ROW_COUNT - 1) * row_pos
-end
-
-ignore_pos = [
-  [0, 2], [2, 4], [3, 4], [4, 4], [13, 4], [14, 4]
+# So we'll have to exclude six of them
+# (Compare with the photo of the Amatelus73)
+EXCLUDE_POS = [
+  [0, 2],                                   # Exclude one LED position from the third row
+  [2, 4], [3, 4], [4, 4], [11, 4], [12, 4]  # Exclude five LED positions from the fifth row
 ]
 
-row_reverse = [true, false, true, false, true]
+# A "right to left" row is "reversed"
+ROW_REVERSED = [ true, false, true, false, true ]
 
-led_pos = Array.new
+def x_pos(col)
+  224 / (RGB_COL_COUNT - 1) * col
+end
 
-RGB_ROW_COUNT.times do |row|
-  row_pos = Array.new
+def y_pos(row)
+  64 / (RGB_ROW_COUNT - 1) * row
+end
+
+rgb_matrix = Array.new
+
+RGB_ROW_COUNT.times do |row_index|
   RGB_COL_COUNT.times do |col|
-    unless ignore_pos.include?([col, row])
-      if row_reverse[row]
-        row_pos.unshift([x(col), y(row)])
-      else
-        row_pos << [x(col), y(row)]
-      end
+    col_index = ROW_REVERSED[row_index] ? (RGB_COL_COUNT - col - 1) : col
+    unless EXCLUDE_POS.include?([col_index, row_index])
+      rgb_matrix << [x_pos(col_index), y_pos(row_index)]
     end
   end
-  led_pos += row_pos
 end
 
 rgb = RGB.new(0, 0, 74, false)
 rgb.effect = :circle
 rgb.speed = 22
-rgb.ws2812_set_pos(led_pos)
+rgb.ws2812_set_pos(rgb_matrix)
+
 kbd.append rgb
 
 kbd.start!
