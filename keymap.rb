@@ -109,7 +109,7 @@ end
 rgb = RGB.new(0, 0, 74, false)
 rgb.effect = :circle
 rgb.speed = 22
-rgb.ws2812_set_pos(rgb_matrix)
+rgb.plot_matrix(rgb_matrix)
 
 kbd.append rgb
 

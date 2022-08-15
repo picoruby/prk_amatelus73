@@ -1,0 +1,9 @@
+class Object
+  RGB_COL_COUNT: Integer
+  RGB_ROW_COUNT: Integer
+  ROW_REVERSED: Array[bool]
+  EXCLUDE_POS: Array[[Integer, Integer]]
+
+  def x_pos: (Integer) -> void
+  def y_pos: (Integer) -> void
+end
