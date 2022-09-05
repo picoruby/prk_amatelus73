@@ -95,21 +95,19 @@ def y_pos(row)
   64 / (RGB_ROW_COUNT - 1) * row
 end
 
-rgb_matrix = Array.new
+rgb = RGB.new(0, 0, 74, false)
 
 RGB_ROW_COUNT.times do |row_index|
   RGB_COL_COUNT.times do |col|
     col_index = ROW_REVERSED[row_index] ? (RGB_COL_COUNT - col - 1) : col
     unless EXCLUDE_POS.include?([col_index, row_index])
-      rgb_matrix << [x_pos(col_index), y_pos(row_index)]
+      rgb.add_pixel(x_pos(col_index), y_pos(row_index))
     end
   end
 end
 
-rgb = RGB.new(0, 0, 74, false)
 rgb.effect = :circle
 rgb.speed = 22
-rgb.plot_matrix(rgb_matrix)
 
 kbd.append rgb
 

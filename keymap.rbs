@@ -4,6 +4,6 @@ class Object
   ROW_REVERSED: Array[bool]
   EXCLUDE_POS: Array[[Integer, Integer]]
 
-  def x_pos: (Integer) -> void
-  def y_pos: (Integer) -> void
+  def x_pos: (Integer) -> Integer
+  def y_pos: (Integer) -> Integer
 end
